@@ -2,9 +2,31 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <LittleFS.h>
-
+#include <vector>
+#include <string>
 
 const char *ssid = "ESP32_Card_Quiz_Game";
+
+unsigned int counterCard = 0;
+
+struct QuizQuestion {
+    std::string question;
+    std::string choiceA;
+    std::string choiceB;
+    std::string choiceC;
+    std::string ChoiceD;
+};
+
+
+std::vector<QuizQuestion> QAA = {
+    {
+        "What is the worlds tallest ice mountain", 
+        "A. Mt. Fuji", 
+        "B. Tommorow", 
+        "C. NExt", 
+        "D. NOT NOW"       
+    }
+};
 
 WebServer server(80);
 
@@ -49,7 +71,10 @@ void setup() {
     Serial.print("IP address: ");
     Serial.println(WiFi.softAPIP());
 
-    server.on("/text", HTTP_GET, [](){
+
+    // The next problem now is how you can send the data from the 
+    // "/textQAA" route
+    server.on("/textQAA", HTTP_GET, [](){
         server.send(200, "text/plain", "Aces of spade");
     });
 
@@ -66,6 +91,9 @@ void setup() {
 
 void loop() {
     server.handleClient();
+
+
+
     // on the loop will all the sensor input
     // and the output for the counter
 }
