@@ -3,7 +3,7 @@ document.getElementById('actionBtn').addEventListener('click', () => {
     output.innerText = "Drawing card...";
     
     // Example fetch to get data from ESP32 background APIs later
-    fetch('/api/draw')
+    fetch('/text')
         .then(response => response.text())
         .then(data => {
             output.innerText = data;
@@ -12,3 +12,4 @@ document.getElementById('actionBtn').addEventListener('click', () => {
             output.innerText = "Error contacting ESP32 server.";
         });
 });
+

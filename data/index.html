@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Card Game</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="card-container">
-        <h1>♠️ ESP32 Card Game Hub ♣️</h1>
-        <p>Powered by LittleFS & Web Server</p>
-        <button id="actionBtn">Draw Card</button>
-        <div id="output">Waiting for action...</div>
+
+    <div id="question">
+        <p id="questioncard">Generate Some questions</p>
     </div>
-    <script src="/script.js"></script>
+
+    <div id="buttons-control">
+        <button id="button-next">next</button>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
