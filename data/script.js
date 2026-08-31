@@ -1,30 +1,27 @@
-const cardquestion = document.querySelector("#questioncard")
-const choiceA = document.querySelector("#A")
-const choiceB = document.querySelector("#B")
-const choiceC = document.querySelector("#C")
-const choiceD = document.querySelector("#D")
+const cardquestion = document.querySelector('#questioncard')
+const choiceA = document.querySelector('#A')
+const choiceB = document.querySelector('#B')
+const choiceC = document.querySelector('#C')
+const choiceD = document.querySelector('#D')
 
 
-fetch('/textQAA')
-    .then(res => { response.text() })
-    .then(data => {
-        // We do something here for the data
-        // this fetch can be done only once
-    })
-
-
-
-document.getElementById('actionBtn').addEventListener('click', () => {
-    // Example fetch to get data from ESP32 background APIs later
+function loadNewQuestion() {
     fetch('/textQAA')
-        .then(response => { response.text() })
+        .then(res => res.json())
         .then(data => {
-            output.innerText = data;
+            // We do something here for the data
+            // this fetch can be done only once
+    
+            cardquestion.textContent = data.question
+            choiceA.textContent = data.a
+            choiceB.textContent = data.b
+            choiceC.textContent = data.c
+            choiceD.textContent = data.d
         })
-        .catch(err => {
-            output.innerText = "Error contacting ESP32 server.";
-        });
-});
+        .catch(err => console.error('Error fetching question'))
+}
 
 
+document.getElementById('button-next').addEventListener('click', loadNewQuestion);
 
+window.addEventListener('DOMContentLoaded', loadNewQuestion)

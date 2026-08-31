@@ -4,17 +4,18 @@
 #include <LittleFS.h>
 #include <vector>
 #include <string>
+#include <ArduinoJson.h>
 
 const char *ssid = "ESP32_Card_Quiz_Game";
 
 unsigned int counterCard = 0;
 
 struct QuizQuestion {
-    std::string question;
-    std::string choiceA;
-    std::string choiceB;
-    std::string choiceC;
-    std::string ChoiceD;
+    String question;
+    String choiceA;
+    String choiceB;
+    String choiceC;
+    String choiceD;
 };
 
 
@@ -29,6 +30,26 @@ std::vector<QuizQuestion> QAA = {
 };
 
 WebServer server(80);
+
+
+// This will handle the question queueing acquisition
+void handleGetQuestion() {
+    JsonDocument doc;
+
+    doc["question"] = QAA[counterCard].question;
+    doc["a"] = QAA[counterCard].choiceA;
+    doc["b"] = QAA[counterCard].choiceB;
+    doc["c"] = QAA[counterCard].choiceC;
+    doc["d"] = QAA[counterCard].choiceD;
+
+    
+    String jsonResponse;
+    serializeJson(doc, jsonResponse);
+
+    Serial.println(jsonResponse);
+
+    server.send(200, "application/json", jsonResponse);
+}
 
 bool handleFileRead(String path) {
 
@@ -74,9 +95,9 @@ void setup() {
 
     // The next problem now is how you can send the data from the 
     // "/textQAA" route
-    server.on("/textQAA", HTTP_GET, [](){
-        server.send(200, "text/plain", "Aces of spade");
-    });
+    server.on("/textQAA", HTTP_GET,  handleGetQuestion);
+
+
 
     server.onNotFound([]() {
         if(!handleFileRead(server.uri())) {
