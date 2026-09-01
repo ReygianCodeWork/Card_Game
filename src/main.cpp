@@ -18,14 +18,20 @@ struct QuizQuestion {
     String choiceD;
 };
 
-
 std::vector<QuizQuestion> QAA = {
     {
         "What is the worlds tallest ice mountain", 
         "A. Mt. Fuji", 
         "B. Tommorow", 
         "C. NExt", 
-        "D. NOT NOW"       
+        "D. NOT NOW", 
+    },
+    {
+        "The Brain of the computer", 
+        "A. Tower A", 
+        "B. CPU", 
+        "C. Volatile Memory", 
+        "D. HTTP",
     }
 };
 
@@ -34,21 +40,55 @@ WebServer server(80);
 
 // This will handle the question queueing acquisition
 void handleGetQuestion() {
+    if (counterCard >= QAA.size()) {
+        counterCard = 0;
+        JsonDocument noNext;
+
+        noNext["nonext"] = "NONEXT";
+        noNext["count"] = counterCard;
+
+        String Response;
+        serializeJson(noNext, Response);
+        server.send(200, "application/json", Response);
+        return;
+    }
     JsonDocument doc;
-
-    doc["question"] = QAA[counterCard].question;
-    doc["a"] = QAA[counterCard].choiceA;
-    doc["b"] = QAA[counterCard].choiceB;
-    doc["c"] = QAA[counterCard].choiceC;
-    doc["d"] = QAA[counterCard].choiceD;
-
+    
+    doc["question"] = QAA.at(counterCard).question;
+    doc["a"] = QAA.at(counterCard).choiceA;
+    doc["b"] = QAA.at(counterCard).choiceB;
+    doc["c"] = QAA.at(counterCard).choiceC;
+    doc["d"] = QAA.at(counterCard).choiceD;
     
     String jsonResponse;
     serializeJson(doc, jsonResponse);
-
+    
     Serial.println(jsonResponse);
-
+    
     server.send(200, "application/json", jsonResponse);
+
+}
+
+// Handle the press button in the website
+void handlePostString() {
+    if (server.hasArg("plain")) {
+        String message = server.arg("plain"); // captures raw "plain/text"
+
+        if(message == "press") {
+            counterCard++;
+            if (counterCard >= QAA.size()) {
+                counterCard = 0;
+            }
+
+            server.send(200, "text/plain", "Action is executed");
+        }
+        else {
+            server.send(400, "text/plain", "Error: Unknown command received");
+        }
+    } 
+    else {
+        server.send(400, "text/plain", "Error: Empty body received");
+    }
 }
 
 bool handleFileRead(String path) {
@@ -97,7 +137,9 @@ void setup() {
     // "/textQAA" route
     server.on("/textQAA", HTTP_GET,  handleGetQuestion);
 
-
+    // The next server.on will receive a POST request and store it in 
+    // a variable.
+    server.on("/textPress", HTTP_POST, handlePostString);
 
     server.onNotFound([]() {
         if(!handleFileRead(server.uri())) {
@@ -112,8 +154,6 @@ void setup() {
 
 void loop() {
     server.handleClient();
-
-
 
     // on the loop will all the sensor input
     // and the output for the counter
