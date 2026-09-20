@@ -24,7 +24,7 @@ QuizQuestion QuizManager::getCurrentQuestion() const {
 void QuizManager::advanceToNext() {
     currentCardIndex++;
     if (currentCardIndex >= questions.size()) {
-        this->reset();
+        return;
     }
 }
 
@@ -35,6 +35,4 @@ void QuizManager::reset() {
 size_t QuizManager::getCurrentIndex() const {
     return currentCardIndex;
 }
-
-
 

@@ -7,7 +7,7 @@ WebServerManager::WebServerManager(QuizManager& quizManager) : server(80), quiz(
 
 void WebServerManager::begin() {
     server.on("/textQAA", HTTP_GET, std::bind(&WebServerManager::handleGetQuestion, this));
-    server.on("/textPress", HTTP_POST, std::bind(&WebServerManager::handlePostString, this));
+   // server.on("/textPress", HTTP_POST, std::bind(&WebServerManager::handlePostString, this));
     
     server.onNotFound([this]() {
         if (!handleFileRead(server.uri())) {

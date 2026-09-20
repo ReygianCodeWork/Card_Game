@@ -7,7 +7,7 @@ class QuizManager {
     private:
         std::vector<QuizQuestion> questions;
         size_t currentCardIndex;
-
+        
     public:
         QuizManager();
         void loadMockQuestions();
@@ -17,4 +17,5 @@ class QuizManager {
         void advanceToNext();
         void reset();
         size_t getCurrentIndex() const;
+
 };
